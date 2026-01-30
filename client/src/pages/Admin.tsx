@@ -164,10 +164,30 @@ function StudentManager() {
   const { students, create, remove } = useStudents();
   const [form, setForm] = useState({ fullName: "", gradeLevel: "", section: "" });
   const [open, setOpen] = useState(false);
+  const gradeLevels = Array.from({ length: 6 }, (_, i) => (i + 7).toString());
+  // dummy sections data TODO:
+  const sections = {
+    "7": ["A", "B", "C"],
+    "8": ["D", "E", "F"],
+    "9": ["G", "H", "I"],
+    "10": ["J", "K", "L"],
+    "11": ["M", "N", "O"],
+    "12": ["P", "Q", "R"],
+  }
+  let currentSections = form.gradeLevel ? sections[form.gradeLevel as keyof typeof sections] : [];
 
   const handleSubmit = () => {
+    if (!form.fullName || !form.gradeLevel || !form.section) {
+      alert("Please fill in all fields.");
+      return;
+    }
     create(form, { onSuccess: () => { setOpen(false); setForm({ fullName: "", gradeLevel: "", section: "" }); }});
   };
+
+  const onChangeGradeLevel = (value: string) => {
+    setForm({...form, gradeLevel: value});
+
+  }
 
   return (
     <div className="space-y-6">
@@ -176,7 +196,7 @@ function StudentManager() {
           <DialogTrigger asChild>
             <Button className="gap-2 shadow-lg shadow-primary/20"><Plus className="w-4 h-4" /> Add Student</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="overflow-visible">
             <DialogHeader><DialogTitle>Add Student</DialogTitle></DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
@@ -186,11 +206,31 @@ function StudentManager() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Grade Level</Label>
-                  <Input value={form.gradeLevel} onChange={e => setForm({...form, gradeLevel: e.target.value})} placeholder="7" />
+                  {/* <Input value={form.gradeLevel} onChange={e => setForm({...form, gradeLevel: e.target.value})} placeholder="7" /> */}
+                  <Select value={form.gradeLevel} onValueChange={onChangeGradeLevel}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Grade Level" />
+                    </SelectTrigger>
+                    <SelectContent position="popper" className="z-[100] max-h-60 overflow-y-auto">
+                      {gradeLevels.map(level => (
+                        <SelectItem key={level} value={level}>Grade {level}</SelectItem>
+                      ))}
+                    </SelectContent>
+
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Section</Label>
-                  <Input value={form.section} onChange={e => setForm({...form, section: e.target.value})} placeholder="A" />
+                  <Select value={form.section} onValueChange={value => setForm({...form, section: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Section" />
+                    </SelectTrigger>
+                    <SelectContent position="popper" sideOffset={4} className="max-h-60 overflow-y-auto">
+                      {currentSections.map(section => (
+                        <SelectItem key={section} value={section}>{section}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <Button className="w-full" onClick={handleSubmit}>Save Student</Button>
