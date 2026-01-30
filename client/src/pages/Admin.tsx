@@ -96,8 +96,14 @@ function FacultyManager() {
   const { faculty, create, remove } = useFaculty();
   const [form, setForm] = useState({ fullName: "", subject: "", position: "", department: "junior_high" as const });
   const [open, setOpen] = useState(false);
+  const positions = ["Head Teacher", "Assistant Teacher", "Counselor", "Administrator"];
+  const subjects = ["Mathematics", "Science", "English", "History", "Art"];
 
   const handleSubmit = () => {
+    if (!form.fullName || !form.subject || !form.position || !form.department) {
+      alert("Please fill in all fields.");
+      return;
+    }
     create(form, { onSuccess: () => { setOpen(false); setForm({ fullName: "", subject: "", position: "", department: "junior_high" }); }});
   };
 
@@ -117,11 +123,25 @@ function FacultyManager() {
               </div>
               <div className="space-y-2">
                 <Label>Position</Label>
-                <Input value={form.position} onChange={e => setForm({...form, position: e.target.value})} placeholder="e.g. Head Teacher" />
+                <Select value={form.position} onValueChange={(v: any) => setForm({...form, position: v})}>
+                  <SelectTrigger><SelectValue placeholder="Select a position" /></SelectTrigger>
+                  <SelectContent>
+                    {positions.map(pos => (
+                      <SelectItem key={pos} value={pos}>{pos}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Subject</Label>
-                <Input value={form.subject} onChange={e => setForm({...form, subject: e.target.value})} placeholder="e.g. Mathematics" />
+                <Select value={form.subject} onValueChange={(v: any) => setForm({...form, subject: v})}>
+                  <SelectTrigger><SelectValue placeholder="Select a subject" /></SelectTrigger>
+                  <SelectContent>
+                    {subjects.map(sub => (
+                      <SelectItem key={sub} value={sub}>{sub}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Department</Label>
