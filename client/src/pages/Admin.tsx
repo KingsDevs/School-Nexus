@@ -96,8 +96,8 @@ function FacultyManager() {
   const { faculty, create, remove } = useFaculty();
   const [form, setForm] = useState({ fullName: "", subject: "", position: "", department: "junior_high" as const });
   const [open, setOpen] = useState(false);
-  const positions = ["Head Teacher", "Assistant Teacher", "Counselor", "Administrator"];
-  const subjects = ["Mathematics", "Science", "English", "History", "Art"];
+  const positions = ["Head Teacher", "Assistant Teacher", "Counselor", "Administrator"]; //TODO:
+  const subjects = ["Mathematics", "Science", "English", "History", "Art"]; //TODO:
 
   const handleSubmit = () => {
     if (!form.fullName || !form.subject || !form.position || !form.department) {
@@ -185,8 +185,7 @@ function StudentManager() {
   const [form, setForm] = useState({ fullName: "", gradeLevel: "", section: "" });
   const [open, setOpen] = useState(false);
   const gradeLevels = Array.from({ length: 6 }, (_, i) => (i + 7).toString());
-  // dummy sections data TODO:
-  const sections = {
+  const sections = {  //TODO:
     "7": ["A", "B", "C"],
     "8": ["D", "E", "F"],
     "9": ["G", "H", "I"],
@@ -283,14 +282,18 @@ function StudentManager() {
 function EventManager() {
   const { events, create, remove } = useEvents();
   const { mutate: addImage } = useAddEventImage();
-  const [form, setForm] = useState({ title: "", date: "", description: "" });
+  const [form, setForm] = useState({ title: "", date: "", description: "", localImage: "" });
   const [open, setOpen] = useState(false);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   const [imageUrl, setImageUrl] = useState("");
 
   const handleSubmit = () => {
-    create(form, { onSuccess: () => { setOpen(false); setForm({ title: "", date: "", description: "" }); }});
+    // if (!form.title || !form.date || !form.description) {
+    //   alert("Please fill in all fields.");
+    //   return;
+    // }
+    create(form, { onSuccess: () => { setOpen(false); setForm({ title: "", date: "", description: "", localImage: '' }); }});
   };
 
   const handleAddImage = () => {
