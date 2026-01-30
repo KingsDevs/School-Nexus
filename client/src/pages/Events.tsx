@@ -104,25 +104,6 @@ export default function Events() {
                 <p className="text-muted-foreground">No events scheduled for this day.</p>
               </div>
             )}
-            
-            {/* Upcoming Events Preview */}
-            <div className="mt-8 pt-8 border-t">
-              <h3 className="font-bold text-lg mb-4 text-muted-foreground uppercase tracking-wider text-sm">All Upcoming Events</h3>
-              <div className="space-y-3">
-                {events?.slice(0, 3).map(event => (
-                  <div key={event.id} className="flex gap-4 items-center p-3 rounded-lg hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-border">
-                    <div className="text-center min-w-[3rem] p-2 bg-muted rounded-lg">
-                      <div className="text-xs font-bold text-muted-foreground uppercase">{format(parseISO(event.date), "MMM")}</div>
-                      <div className="text-lg font-bold text-primary">{format(parseISO(event.date), "d")}</div>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="font-semibold truncate">{event.title}</div>
-                      <div className="text-xs text-muted-foreground truncate">{event.description}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

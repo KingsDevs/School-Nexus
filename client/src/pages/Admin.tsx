@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Plus, Trash2, LogOut, ImagePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 export default function Admin() {
   const { isAuthenticated, isLoading, login, isLoggingIn, logout } = useAuth();
@@ -46,6 +47,10 @@ export default function Admin() {
             >
               {isLoggingIn ? "Logging in..." : "Login"}
             </Button>
+            <div className="space-y-2">
+              <Link href="/">Back to Home</Link>
+            </div>
+            
           </CardContent>
         </Card>
       </div>

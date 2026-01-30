@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, GraduationCap, Calendar, ArrowRight } from "lucide-react";
+import { Users, GraduationCap, Calendar, ArrowRight, BookOpenText, MapPinCheck } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 
@@ -102,6 +102,40 @@ export default function Home() {
                   <p className="text-muted-foreground mb-4">Stay updated with school activities, holidays, and special celebrations.</p>
                   <div className="flex items-center text-purple-500 font-medium text-sm">
                     View Calendar <ArrowRight className="ml-2 h-4 w-4" />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Link>
+
+          <Link href="/about">
+            <motion.div variants={item} className="cursor-pointer group">
+              <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-red-500">
+                <CardHeader>
+                  <BookOpenText className="h-8 w-8 text-purple-500 mb-2 group-hover:scale-110 transition-transform" />
+                  <CardTitle className="text-xl">About Us</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">Learn more about our school's history, mission, and values.</p>
+                  <div className="flex items-center text-purple-500 font-medium text-sm">
+                    Read About Us <ArrowRight className="ml-2 h-4 w-4" />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Link>
+
+          <Link href="/map">
+            <motion.div variants={item} className="cursor-pointer group">
+              <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-yellow-500">
+                <CardHeader>
+                  <MapPinCheck className="h-8 w-8 text-purple-500 mb-2 group-hover:scale-110 transition-transform" />
+                  <CardTitle className="text-xl">Campus Map</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">Navigate our campus with ease using the interactive map.</p>
+                  <div className="flex items-center text-purple-500 font-medium text-sm">
+                    View Map <ArrowRight className="ml-2 h-4 w-4" />
                   </div>
                 </CardContent>
               </Card>
