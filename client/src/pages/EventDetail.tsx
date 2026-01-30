@@ -48,7 +48,7 @@ export default function EventDetail() {
                     {/* HTML comment for Unsplash safety: */}
                     {/* event image gallery */}
                     <img 
-                      src="/assets/ati_atihan_street_dancing.png"  
+                      src={`/assets/${img.imageUrl}`} 
                       alt={event.title}
                       className="w-full h-full object-cover"
                     />

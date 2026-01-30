@@ -286,7 +286,7 @@ function EventManager() {
   const [open, setOpen] = useState(false);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleSubmit = () => {
     // if (!form.title || !form.date || !form.description) {
@@ -296,13 +296,31 @@ function EventManager() {
     create(form, { onSuccess: () => { setOpen(false); setForm({ title: "", date: "", description: "", localImage: '' }); }});
   };
 
-  const handleAddImage = () => {
-    if (selectedEventId && imageUrl) {
-      addImage({ id: selectedEventId, imageUrl }, { onSuccess: () => {
-        setImageDialogOpen(false);
-        setImageUrl("");
-      }});
-    }
+  const handleAddImage = async () => {
+    if (!selectedEventId || !imageFile) return;
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    addImage(
+      {
+        id: selectedEventId,
+        imageUrl: data.filename, // store filename only
+      },
+      {
+        onSuccess: () => {
+          setImageDialogOpen(false);
+          setImageFile(null);
+        },
+      }
+    );
   };
 
   return (
@@ -338,7 +356,12 @@ function EventManager() {
              <div className="space-y-4 py-4">
                <div className="space-y-2">
                  <Label>Image URL</Label>
-                 <Input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="https://..." />
+                 <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  />
+
                </div>
                <Button className="w-full" onClick={handleAddImage}>Add Image</Button>
              </div>
