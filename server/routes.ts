@@ -6,6 +6,22 @@ import { api } from "@shared/routes";
 import { z } from "zod";
 import { insertAdminSchema } from "@shared/schema";
 
+import multer from "multer";
+import path from "path";
+import crypto from "crypto";
+
+const uploadStorage = multer.diskStorage({
+  destination: "client/public/assets",
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = crypto.randomBytes(16).toString("hex");
+    cb(null, name + ext);
+  },
+});
+
+const upload = multer({ storage: uploadStorage });
+
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -139,6 +155,17 @@ export async function registerRoutes(
       res.status(400).json({ message: "Invalid input" });
     }
   });
+
+  app.post("/api/upload", upload.single("image"), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    res.json({
+      filename: req.file.filename,
+    });
+  });
+
 
   // Seed Data
   await seedDatabase();

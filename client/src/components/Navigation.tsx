@@ -7,7 +7,10 @@ import {
   Calendar, 
   Settings,
   Menu,
-  X
+  X,
+  BookOpenText,
+  MapPinCheck
+
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +21,8 @@ const NAV_ITEMS = [
   { label: "Faculty", href: "/faculty", icon: Users },
   { label: "Students", href: "/students", icon: GraduationCap },
   { label: "Events", href: "/events", icon: Calendar },
+  { label: "Map", href: "/map", icon: MapPinCheck },
+  { label: "About", href: "/about", icon: BookOpenText },
   { label: "Admin", href: "/admin", icon: Settings },
 ];
 

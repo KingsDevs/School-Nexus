@@ -44,15 +44,15 @@ export default function EventDetail() {
             <div className="embla overflow-hidden h-full" ref={emblaRef}>
               <div className="embla__container h-full flex">
                 {event.images.map((img) => (
-                  <div key={img.id} className="embla__slide flex-[0_0_100%] min-w-0 relative">
+                    <div key={img.id} className="embla__slide flex-[0_0_100%] min-w-0 relative">
                     {/* HTML comment for Unsplash safety: */}
                     {/* event image gallery */}
                     <img 
-                      src={img.imageUrl} 
+                      src={`/assets/${img.imageUrl}`} 
                       alt={event.title}
                       className="w-full h-full object-cover"
                     />
-                  </div>
+                    </div>
                 ))}
               </div>
             </div>

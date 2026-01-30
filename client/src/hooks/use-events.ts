@@ -17,6 +17,7 @@ export function useEvents() {
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertEvent) => {
+      console.log("Creating event with data:", data);
       const res = await fetch(api.events.create.path, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Plus, Trash2, LogOut, ImagePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 export default function Admin() {
   const { isAuthenticated, isLoading, login, isLoggingIn, logout } = useAuth();
@@ -46,6 +47,10 @@ export default function Admin() {
             >
               {isLoggingIn ? "Logging in..." : "Login"}
             </Button>
+            <div className="space-y-2">
+              <Link href="/">Back to Home</Link>
+            </div>
+            
           </CardContent>
         </Card>
       </div>
@@ -91,8 +96,14 @@ function FacultyManager() {
   const { faculty, create, remove } = useFaculty();
   const [form, setForm] = useState({ fullName: "", subject: "", position: "", department: "junior_high" as const });
   const [open, setOpen] = useState(false);
+  const positions = ["Head Teacher", "Assistant Teacher", "Counselor", "Administrator"]; //TODO:
+  const subjects = ["Mathematics", "Science", "English", "History", "Art"]; //TODO:
 
   const handleSubmit = () => {
+    if (!form.fullName || !form.subject || !form.position || !form.department) {
+      alert("Please fill in all fields.");
+      return;
+    }
     create(form, { onSuccess: () => { setOpen(false); setForm({ fullName: "", subject: "", position: "", department: "junior_high" }); }});
   };
 
@@ -112,11 +123,25 @@ function FacultyManager() {
               </div>
               <div className="space-y-2">
                 <Label>Position</Label>
-                <Input value={form.position} onChange={e => setForm({...form, position: e.target.value})} placeholder="e.g. Head Teacher" />
+                <Select value={form.position} onValueChange={(v: any) => setForm({...form, position: v})}>
+                  <SelectTrigger><SelectValue placeholder="Select a position" /></SelectTrigger>
+                  <SelectContent>
+                    {positions.map(pos => (
+                      <SelectItem key={pos} value={pos}>{pos}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Subject</Label>
-                <Input value={form.subject} onChange={e => setForm({...form, subject: e.target.value})} placeholder="e.g. Mathematics" />
+                <Select value={form.subject} onValueChange={(v: any) => setForm({...form, subject: v})}>
+                  <SelectTrigger><SelectValue placeholder="Select a subject" /></SelectTrigger>
+                  <SelectContent>
+                    {subjects.map(sub => (
+                      <SelectItem key={sub} value={sub}>{sub}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Department</Label>
@@ -159,10 +184,29 @@ function StudentManager() {
   const { students, create, remove } = useStudents();
   const [form, setForm] = useState({ fullName: "", gradeLevel: "", section: "" });
   const [open, setOpen] = useState(false);
+  const gradeLevels = Array.from({ length: 6 }, (_, i) => (i + 7).toString());
+  const sections = {  //TODO:
+    "7": ["A", "B", "C"],
+    "8": ["D", "E", "F"],
+    "9": ["G", "H", "I"],
+    "10": ["J", "K", "L"],
+    "11": ["M", "N", "O"],
+    "12": ["P", "Q", "R"],
+  }
+  let currentSections = form.gradeLevel ? sections[form.gradeLevel as keyof typeof sections] : [];
 
   const handleSubmit = () => {
+    if (!form.fullName || !form.gradeLevel || !form.section) {
+      alert("Please fill in all fields.");
+      return;
+    }
     create(form, { onSuccess: () => { setOpen(false); setForm({ fullName: "", gradeLevel: "", section: "" }); }});
   };
+
+  const onChangeGradeLevel = (value: string) => {
+    setForm({...form, gradeLevel: value});
+
+  }
 
   return (
     <div className="space-y-6">
@@ -171,7 +215,7 @@ function StudentManager() {
           <DialogTrigger asChild>
             <Button className="gap-2 shadow-lg shadow-primary/20"><Plus className="w-4 h-4" /> Add Student</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="overflow-visible">
             <DialogHeader><DialogTitle>Add Student</DialogTitle></DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
@@ -181,11 +225,31 @@ function StudentManager() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Grade Level</Label>
-                  <Input value={form.gradeLevel} onChange={e => setForm({...form, gradeLevel: e.target.value})} placeholder="7" />
+                  {/* <Input value={form.gradeLevel} onChange={e => setForm({...form, gradeLevel: e.target.value})} placeholder="7" /> */}
+                  <Select value={form.gradeLevel} onValueChange={onChangeGradeLevel}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Grade Level" />
+                    </SelectTrigger>
+                    <SelectContent position="popper" className="z-[100] max-h-60 overflow-y-auto">
+                      {gradeLevels.map(level => (
+                        <SelectItem key={level} value={level}>Grade {level}</SelectItem>
+                      ))}
+                    </SelectContent>
+
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Section</Label>
-                  <Input value={form.section} onChange={e => setForm({...form, section: e.target.value})} placeholder="A" />
+                  <Select value={form.section} onValueChange={value => setForm({...form, section: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Section" />
+                    </SelectTrigger>
+                    <SelectContent position="popper" sideOffset={4} className="max-h-60 overflow-y-auto">
+                      {currentSections.map(section => (
+                        <SelectItem key={section} value={section}>{section}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <Button className="w-full" onClick={handleSubmit}>Save Student</Button>
@@ -218,23 +282,45 @@ function StudentManager() {
 function EventManager() {
   const { events, create, remove } = useEvents();
   const { mutate: addImage } = useAddEventImage();
-  const [form, setForm] = useState({ title: "", date: "", description: "" });
+  const [form, setForm] = useState({ title: "", date: "", description: "", localImage: "" });
   const [open, setOpen] = useState(false);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleSubmit = () => {
-    create(form, { onSuccess: () => { setOpen(false); setForm({ title: "", date: "", description: "" }); }});
+    // if (!form.title || !form.date || !form.description) {
+    //   alert("Please fill in all fields.");
+    //   return;
+    // }
+    create(form, { onSuccess: () => { setOpen(false); setForm({ title: "", date: "", description: "", localImage: '' }); }});
   };
 
-  const handleAddImage = () => {
-    if (selectedEventId && imageUrl) {
-      addImage({ id: selectedEventId, imageUrl }, { onSuccess: () => {
-        setImageDialogOpen(false);
-        setImageUrl("");
-      }});
-    }
+  const handleAddImage = async () => {
+    if (!selectedEventId || !imageFile) return;
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    addImage(
+      {
+        id: selectedEventId,
+        imageUrl: data.filename, // store filename only
+      },
+      {
+        onSuccess: () => {
+          setImageDialogOpen(false);
+          setImageFile(null);
+        },
+      }
+    );
   };
 
   return (
@@ -270,7 +356,12 @@ function EventManager() {
              <div className="space-y-4 py-4">
                <div className="space-y-2">
                  <Label>Image URL</Label>
-                 <Input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="https://..." />
+                 <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  />
+
                </div>
                <Button className="w-full" onClick={handleAddImage}>Add Image</Button>
              </div>
